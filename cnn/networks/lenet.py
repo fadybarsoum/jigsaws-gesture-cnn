@@ -13,19 +13,19 @@ class LeNet:
 
 
         # first set of CONV => RELU => POOL
-        model.add(Convolution2D(30, 5, 5, activation="relu", border_mode="full", input_shape=(depth, height, width)))
+        model.add(Convolution2D(30, 5, 5, activation="relu", border_mode="same", input_shape=(depth, height, width)))
         model.add(Dropout(0.3))
         #model.add(Activation("relu"))
         model.add(MaxPooling2D(pool_size=(2, 2), dim_ordering='th'))
 
         # second set of CONV => RELU => POOL
-        model.add(Convolution2D(80, 5, 5, activation="relu", border_mode="full"))
+        model.add(Convolution2D(80, 5, 5, activation="relu", border_mode="same"))
         model.add(Dropout(0.3))
         #model.add(Activation("relu"))
         model.add(MaxPooling2D(pool_size=(2, 2), dim_ordering='th'))
 
         # third set of CONV => RELU => POOL
-        model.add(Convolution2D(80, 5, 5, activation="relu", border_mode="full"))
+        model.add(Convolution2D(80, 5, 5, activation="relu", border_mode="same"))
         model.add(Dropout(0.3))
         #model.add(Activation("relu"))
         model.add(MaxPooling2D(pool_size=(2, 2), dim_ordering='th'))

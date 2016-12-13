@@ -3,9 +3,9 @@ import os
 os.environ['MKL_NUM_THREADS'] = '4'
 os.environ['GOTO_NUM_THREADS'] = '4'
 os.environ['OMP_NUM_THREADS'] = '4'
-os.environ['THEANO_FLAGS'] = 'floatX=float32,openmp=True'
-import theano
-theano.config.openmp=True
+#os.environ['THEANO_FLAGS'] = 'floatX=float32,openmp=True'
+#import theano
+#theano.config.openmp=True
 from cnn.networks.lenet import LeNet # from jigsawsgesturecnn.
 from sklearn.cross_validation import train_test_split
 from sklearn import datasets
@@ -45,7 +45,7 @@ class SutureVideoLoader:
             with open(labeldir+vid[:-13]+".txt") as f:
                 t = f.read()
             lines = t.split(" \n")[:-1]
-            vidlabelinfos = map(lambda x: x.split(' '), lines)
+            vidlabelinfos = list(map(lambda x: x.split(' '), lines))
             vidlabels = [0]*(int(vidlabelinfos[0][0])-1)
             # 0 being the label of no gesture
             for labelinfo in vidlabelinfos:
@@ -117,16 +117,19 @@ def main():
     print("DONE! " + time.asctime())
 
     trainLabels = np_utils.to_categorical(trainLabels, 12)
+    '''
     try:
         print("Len TL: %s" % len(trainLabels))
         print(trainLabels.shape)
     except:
         pass
+    #'''
+
     testLabels = np_utils.to_categorical(testLabels, 12)
 
     trainData = [np.array(trainData)]
     testData = [np.array(testData)]
-
+    '''
     try:
         print("Len TD: %s" % len(trainData))
         print(trainData.shape)
@@ -146,18 +149,20 @@ def main():
         print("Len TD[0][0][0]: %s" % len(trainData[0][0][0]))
     except:
         pass
-     
+    
+    #'''
+
     # only train and evaluate the model if we are NOT loading a
     # pre-existing model
     if args["load_model"] < 0:
         print("[INFO] training... " + time.asctime())
-        model.fit(trainData, trainLabels, batch_size=128, nb_epoch=epochs, verbose=1)
+        model.fit(trainData, trainLabels, batch_size=32, nb_epoch=epochs, verbose=1)
      
-        # show the accuracy on the testing set
-        print("[INFO] evaluating... " + time.asctime())
-        (loss, accuracy) = model.evaluate(testData, testLabels,
-            batch_size=128, verbose=1)
-        print("[INFO] accuracy: {:.2f}%".format(accuracy * 100))
+    # show the accuracy on the testing set
+    print("[INFO] evaluating... " + time.asctime())
+    (loss, accuracy) = model.evaluate(testData, testLabels,
+        batch_size=32, verbose=1)
+    print("[INFO] accuracy: {:.2f}%".format(accuracy * 100))
 
     print("[INFO] dumping weights to file... " + time.asctime())
     model.save_weights(args["weights"] or str(int(time.time()))+".weights.txt", overwrite=True)
